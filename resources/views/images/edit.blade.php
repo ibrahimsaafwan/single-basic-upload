@@ -1,38 +1,33 @@
+<!-- resources/views/images/edit.blade.php -->
 @extends('layouts.app')
 
-@section('title', 'Edit Image')
-
 @section('content')
-    <div class="card shadow">
-        <div class="card-header bg-warning">
-            <h4 class="mb-0">Edit Image</h4>
+    <h1 class="mb-4">Edit Image</h1>
+
+    <form action="{{ route('images.update', $image->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <div class="mb-3">
+            <label for="image" class="form-label">Choose New Image</label>
+            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image"
+                onchange="previewImage(event)">
+            @error('image')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
-
-        <div class="card-body">
-            <form action="{{ route('images.update', $image) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <div class="mb-4 text-center">
-                    <img src="{{ asset('storage/' . $image->image) }}" class="img-thumbnail mb-3" id="currentImage"
-                        style="max-width: 400px;">
-                </div>
-
-                <div class="mb-4">
-                    <label for="image" class="form-label">Update Image (Optional)</label>
-                    <input type="file" name="image" id="image"
-                        class="form-control @error('image') is-invalid @enderror" accept="image/*">
-                    @error('image')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i> Update
-                    </button>
-                </div>
-            </form>
+        <div class="mb-3">
+            <label class="form-label">Current Image</label>
+            <img src="{{ asset('storage/' . $image->image) }}" class="img-fluid rounded mb-2" alt="Current Image">
         </div>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">New Image Preview</label>
+            <img id="preview" class="img-preview" alt="New Image Preview">
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Update
+        </button>
+        <a href="{{ route('images.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </form>
 @endsection

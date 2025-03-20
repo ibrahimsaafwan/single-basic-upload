@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('images', ImageController::class)->except(['show']);
+Route::resource('images', ImageController::class);

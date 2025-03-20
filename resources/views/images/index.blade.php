@@ -1,6 +1,5 @@
+<!-- resources/views/images/index.blade.php -->
 @extends('layouts.app')
-
-@section('title', 'All Images')
 
 @section('content')
     @if (session()->has('status'))
@@ -9,44 +8,37 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
+    <h1 class="mb-4">Image Gallery</h1>
+    <a href="{{ route('images.create') }}" class="btn btn-primary mb-3">
+        <i class="fas fa-plus"></i> Upload Image
+    </a>
 
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Image Gallery</h4>
-                <a href="{{ route('images.create') }}" class="btn btn-light">
-                    <i class="fas fa-plus"></i> Upload New
-                </a>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <div class="row g-4">
-                @foreach ($images as $image)
-                    <div class="col-md-4 col-lg-3">
-                        <div class="card h-100">
-                            <img src="{{ asset('storage/' . $image->image) }}" class="card-img-top"
-                                style="height: 200px; object-fit: cover;">
-                            <div class="card-footer">
-                                <div class="d-flex justify-content-between">
-                                    <a href="{{ route('images.edit', $image) }}" class="btn btn-sm btn-outline-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-
-                                    <form action="{{ route('images.destroy', $image) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Are you sure?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+    <div class="row">
+        @foreach ($images as $image)
+            <div class="col-md-4 mb-4">
+                <div class="card shadow">
+                    <img src="{{ asset('storage/' . $image->image) }}" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <a href="{{ route('images.show', $image->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{{ route('images.edit', $image->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form action="{{ route('images.destroy', $image->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete()">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
                     </div>
-                @endforeach
+                </div>
             </div>
-        </div>
+        @endforeach
+    </div>
+    <!-- Pagination Links -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ $images->links() }}
     </div>
 @endsection
